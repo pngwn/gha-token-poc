@@ -48,7 +48,9 @@ jobs:
       - name: Build site
         run: pnpm build
       - name: Deploy to Cloudflare Pages
+        env:
+          secret: ${{ secrets.TEST_SECRET }}
         id: cloudflare-pages-deploy
         # fake deploy, all i need is for the secret to be injected into the context
         # referencing a secret anywhere in the job will inject it into the context
-        run: echo "${{ secrets.TEST_SECRET }} from, workflow"
+        run: echo "from, workflow"
